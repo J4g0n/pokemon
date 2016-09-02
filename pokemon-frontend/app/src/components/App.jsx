@@ -2,7 +2,7 @@ import React from 'react';
 import Menu from './Menu.jsx';
 import Content from './Content.jsx';
 
-import { getPokemonList } from "../repositories/pokemonRepository";
+import { getPokemonList, getPokemon } from "../repositories/pokemonRepository";
 
 require("../styles/app.less");
 
@@ -26,11 +26,8 @@ class App extends React.Component {
 	}
 
 	searchPokemon(name) {
-		const { pokemons } = this.state;
-		const foundPokemon = _.find(pokemons, (pokemon) => pokemon.name === name.toLowerCase());
 		this.setState({
-			"searchText": name,
-			"selectedPokemon": foundPokemon
+			"searchText": name
 		});
 	}
 
@@ -41,8 +38,11 @@ class App extends React.Component {
 	}
 
 	selectPokemon(pokemon) {
-		this.setState({
-			"selectedPokemon": pokemon
+		getPokemon(pokemon.url).then(json => {
+			console.log("Pokemon fetched: ", json);
+			this.setState({
+				"selectedPokemon": json
+			})
 		});
 	}
 
