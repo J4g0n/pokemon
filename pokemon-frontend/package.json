@@ -1,7 +1,7 @@
 {
-  "name": "bottle-front",
+  "name": "pokemon-frontend",
   "version": "1.0.0",
-  "description": "Small app for bottle",
+  "description": "Pokemon application",
   "main": "index.js",
   "scripts": {
     "build": "./node_modules/webpack/bin/webpack.js",
@@ -11,16 +11,26 @@
   "author": "J4g0n",
   "license": "ISC",
   "dependencies": {
+    "lodash": "^4.15.0",
+    "normalize.css": "^4.2.0",
+    "less": "^2.7.1",
     "react": "^15.3.1",
-    "react-dom": "^15.3.1"
+    "react-dom": "^15.3.1",
+    "whatwg-fetch": "^1.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.13.2",
     "babel-loader": "^6.2.5",
     "babel-preset-es2015": "^6.13.2",
     "babel-preset-react": "^6.11.1",
+    "css-loader": "^0.24.0",
+    "file-loader": "^0.9.0",
+    "less-loader": "^2.2.3",
     "react-hot-loader": "^1.3.0",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.15.0"
   }
 }
+

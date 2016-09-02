@@ -1,0 +1,10 @@
+logs
+/.idea
+/.idea_modules
+/.classpath
+/.project
+/.settings
+/node_modules
+/dist/bundle.js
+/RUNNING_PID
+

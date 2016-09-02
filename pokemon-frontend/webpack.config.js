@@ -11,7 +11,7 @@ module.exports = {
 	],
 	output: {
 		path: __dirname + '/dist',
-		publicPath: '/',
+		publicPath: "/",
 		filename: 'bundle.js',
 	},
 	module: {
@@ -19,14 +19,26 @@ module.exports = {
 			{
 				test: /\.jsx$/,
 				exclude: /node_modules/,
-				include: path.join(__dirname, "app"),
-				loaders: ["react-hot", "babel?presets[]=react,presets[]=es2015"],
+				include: path.join(__dirname, "app/src"),
+				loaders: ["react-hot", "babel"],
 			},
 			{
 				test: /\.js$/,
 				exclude: /node_modules/,
-                include: path.join(__dirname, "app"),
-                loader: "babel-loader"
+				include: path.join(__dirname, "app/src"),
+				loader: "babel-loader"
+			},
+			{
+				test: /\.less$/,
+				exclude: /node_modules/,
+				include: path.join(__dirname, "app/src/styles"),
+				loaders: ["style-loader", "css-loader", "less-loader"]
+			},
+			{
+				test: /\.(png|jpg)$/,
+				exclude: /node_modules/,
+				include: path.join(__dirname, "app/src/images"),
+				loader: 'url-loader'
 			}
 		],
 	},
