@@ -8,7 +8,7 @@ class Content extends React.Component {
 	renderPokemons(pokemons) {
 		return _.map(pokemons, pokemon => {
 			return (
-				<li>{pokemon.name}</li>
+				<li key={pokemon.name}>{pokemon.name}</li>
 			);
 		});
 	}

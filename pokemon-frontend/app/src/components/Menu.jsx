@@ -7,12 +7,14 @@ class Menu extends React.Component {
 		const { searchText, onChange } = this.props;
 	 	return (
 	 		<div className="menu">
-				<input
-					type="text"
-					placeholder="Poke here!"
-					value={searchText}
-					onChange={(event) => onChange(event.target.value)}
-				/>
+				<div className="search">
+					<input
+						type="text"
+						placeholder="Poke here!"
+						value={searchText}
+						onChange={(event) => onChange(event.target.value)}
+					/>
+				</div>
 			</div>
 		);
 	}

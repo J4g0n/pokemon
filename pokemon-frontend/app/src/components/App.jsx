@@ -4,7 +4,7 @@ import Content from './Content.jsx';
 
 import { getPokemonList } from "../repositories/pokemonRepository";
 
-require("../styles/content.less");
+require("../styles/app.less");
 
 
 class App extends React.Component {
