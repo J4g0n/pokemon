@@ -3,8 +3,24 @@ import React from 'react';
 require("../styles/menu.less");
 
 class Menu extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			"searchText": ""
+		};
+	}
+
+	onSearchChange(searchText) {
+		this.setState({
+			"searchText": searchText
+		});
+
+		const debouncedGetPokemon = _.debounce(() => this.props.searchPokemon(searchText), 500);
+		debouncedGetPokemon(searchText)
+	}
+
 	render() {
-		const { searchText, onChange } = this.props;
+		const { searchText } = this.props;
 	 	return (
 	 		<div className="menu">
 				<div className="search">
@@ -12,7 +28,7 @@ class Menu extends React.Component {
 						type="text"
 						placeholder="Poke here!"
 						value={searchText}
-						onChange={(event) => onChange(event.target.value)}
+						onChange={(event) => this.onSearchChange(event.target.value)}
 					/>
 				</div>
 			</div>
@@ -21,8 +37,7 @@ class Menu extends React.Component {
 }
 
 Menu.propTypes = {
-	onChange: React.PropTypes.func.isRequired,
-	searchText: React.PropTypes.string
+	searchPokemon: React.PropTypes.func.isRequired
 };
 
 export default Menu

@@ -1,32 +1,29 @@
 import React from 'react';
-import _ from 'lodash';
+import PokemonCard from './PokemonCard.jsx';
+import PokemonList from './PokemonList.jsx';
 
 require("../styles/content.less");
 
 
 class Content extends React.Component {
-	renderPokemons(pokemons) {
-		return _.map(pokemons, pokemon => {
-			return (
-				<li key={pokemon.name}>{pokemon.name}</li>
-			);
-		});
-	}
-
 	render() {
-		const { pokemons } = this.props;
+		const { selectedPokemon } = this.props;
 	 	return (
 	 		<div className="content">
-				<ul>
-					{this.renderPokemons(pokemons)}
-				</ul>
+				{
+					selectedPokemon ?
+						<PokemonCard pokemon={selectedPokemon}/> :
+						<PokemonList {...this.props}/>
+				}
 			</div>
 		);
 	}
 }
 
 Content.propTypes = {
-	pokemons: React.PropTypes.array.isRequired
+	pokemons: React.PropTypes.array.isRequired,
+	onClickPokemon: React.PropTypes.func.isRequired,
+	selectedPokemon: React.PropTypes.object
 };
 
 export default Content

@@ -11,7 +11,8 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			"searchText": "",
+			"searchText": undefined,
+			"selectedPokemon": undefined,
 			"pokemons": []
 		}
 	}
@@ -24,20 +25,37 @@ class App extends React.Component {
 		});
 	}
 
-	onSearchChange(searchText) {
-		if (searchText.length > 3) {
-			this.setState({
-				"searchText": searchText
-			});
-		}
+	searchPokemon(name) {
+		const { pokemons } = this.state;
+		const foundPokemon = _.find(pokemons, (pokemon) => pokemon.name === name.toLowerCase());
+		this.setState({
+			"searchText": name,
+			"selectedPokemon": foundPokemon
+		});
+	}
+
+	filterPokemons() {
+		const { pokemons, searchText } = this.state;
+		const filteredPokemons = _.filter(pokemons, pokemon => _.startsWith(pokemon.name, searchText));
+		return _.isEmpty(filteredPokemons) ? pokemons : filteredPokemons;
+	}
+
+	selectPokemon(pokemon) {
+		this.setState({
+			"selectedPokemon": pokemon
+		});
 	}
 
 	render() {
-		const { searchText, pokemons } = this.state;
+		const { selectedPokemon } = this.state;
 	 	return (
 	 		<div className="app-layout">
-				<Menu onChange={this.onSearchChange.bind(this)} searchText={searchText}/>
-				<Content pokemons={pokemons}/>
+				<Menu searchPokemon={this.searchPokemon.bind(this)}/>
+				<Content
+					pokemons={this.filterPokemons()}
+					selectedPokemon={selectedPokemon}
+					onClickPokemon={this.selectPokemon.bind(this)}
+				/>
 			</div>
 		);
 	}
