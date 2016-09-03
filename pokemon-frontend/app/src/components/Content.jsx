@@ -1,4 +1,5 @@
 import React from 'react';
+import { connector } from '../redux/connector.jsx';
 import PokemonCard from './PokemonCard.jsx';
 import PokemonList from './PokemonList.jsx';
 
@@ -26,4 +27,4 @@ Content.propTypes = {
 	selectedPokemon: React.PropTypes.object
 };
 
-export default Content
+export default connector(state => state)(Content);
