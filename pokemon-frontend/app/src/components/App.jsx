@@ -31,6 +31,12 @@ class App extends React.Component {
 		});
 	}
 
+	resetApp() {
+		this.setState({
+			"selectedPokemon": undefined
+		});
+	}
+
 	filterPokemons() {
 		const { pokemons, searchText } = this.state;
 		const filteredPokemons = _.filter(pokemons, pokemon => _.startsWith(pokemon.name, searchText));
@@ -50,7 +56,10 @@ class App extends React.Component {
 		const { selectedPokemon } = this.state;
 	 	return (
 	 		<div className="app-layout">
-				<Menu searchPokemon={this.searchPokemon.bind(this)}/>
+				<Menu
+					searchPokemon={this.searchPokemon.bind(this)}
+					resetApp={this.resetApp.bind(this)}
+				/>
 				<Content
 					pokemons={this.filterPokemons()}
 					selectedPokemon={selectedPokemon}

@@ -16,13 +16,16 @@ class Menu extends React.Component {
 		});
 
 		const debouncedGetPokemon = _.debounce(() => this.props.searchPokemon(searchText), 500);
-		debouncedGetPokemon(searchText)
+		debouncedGetPokemon();
 	}
 
 	render() {
-		const { searchText } = this.props;
+		const { searchText, resetApp } = this.props;
 	 	return (
 	 		<div className="menu">
+				<div className="logo" onClick={resetApp}>
+					<img src={ require("../images/pokeball.png") } alt="pokeball" height="40px" width="40px"/>
+				</div>
 				<div className="search">
 					<input
 						type="text"
@@ -37,7 +40,8 @@ class Menu extends React.Component {
 }
 
 Menu.propTypes = {
-	searchPokemon: React.PropTypes.func.isRequired
+	searchPokemon: React.PropTypes.func.isRequired,
+	resetApp: React.PropTypes.func.isRequired
 };
 
 export default Menu
