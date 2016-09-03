@@ -1,6 +1,6 @@
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux'
-import searchReducer from './modules/searchReducer.js';
-import contentReducer from './modules/contentReducer.js';
+import search from './modules/searchReducer.js';
+import content from './modules/contentReducer.js';
 //import logger from 'redux-logger'
 
 // here is an example of middleware we can put to process state before reducers
@@ -10,14 +10,18 @@ import contentReducer from './modules/contentReducer.js';
 )(createStore);*/
 
 const combinedReducers = combineReducers({
-    searchReducer,
-    contentReducer
+    search,
+    content
 });
 
 // ok it seems you have to address reducer value by name if you want to avoid warnings
 const defaultInitialState = {
-    "searchReducer": { "searchText": "" },
-    "contentReducer": { "pokemons": [] }
+    "search": {
+        "searchText": ""
+    },
+    "content": {
+        "pokemons": []
+    }
 };
 
 

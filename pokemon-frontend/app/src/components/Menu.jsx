@@ -1,29 +1,24 @@
-import React from 'react';  
+import React from 'react';
+import { connector } from '../redux/connector.jsx';
 
 require("../styles/menu.less");
 
 class Menu extends React.Component {
-	constructor(props) {
-		super(props);
-		this.state = {
-			"searchText": ""
-		};
+	onSearchChange(searchText) {
+		const { actions, dispatch } = this.props;
+		dispatch(actions.searchPokemon(searchText));
 	}
 
-	onSearchChange(searchText) {
-		this.setState({
-			"searchText": searchText
-		});
-
-		const debouncedGetPokemon = _.debounce(() => this.props.searchPokemon(searchText), 500);
-		debouncedGetPokemon();
+	resetApp() {
+		const { actions, dispatch } = this.props;
+		dispatch(actions.resetApp());
 	}
 
 	render() {
-		const { searchText, resetApp } = this.props;
+		const { searchText } = this.props;
 	 	return (
 	 		<div className="menu">
-				<div className="logo" onClick={resetApp}>
+				<div className="logo" onClick={() => this.resetApp()}>
 					<img src={ require("../images/pokeball.png") } alt="pokeball" height="40px" width="40px"/>
 				</div>
 				<div className="search">
@@ -40,8 +35,7 @@ class Menu extends React.Component {
 }
 
 Menu.propTypes = {
-	searchPokemon: React.PropTypes.func.isRequired,
-	resetApp: React.PropTypes.func.isRequired
+	searchText: React.PropTypes.string.isRequired
 };
 
-export default Menu
+export default connector(state => state.search)(Menu)
