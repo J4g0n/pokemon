@@ -1,9 +1,13 @@
 package models.pokemonApi
 
+import models.payload.PokemonPreviewPayload
 import play.api.libs.json.{JsPath, Json, Reads}
-import play.api.libs.functional.syntax._
+import com.netaporter.uri.dsl._
 
-case class PokemonApiPreview(name: String, url: String)
+
+case class PokemonApiPreview(name: String, url: String){
+  def toPayload = PokemonPreviewPayload(id = url.pathParts(3).part.toInt, name = name)
+}
 
 object PokemonApiPreview {
   implicit val pokemonTypeFormat = Json.format[PokemonApiPreview]

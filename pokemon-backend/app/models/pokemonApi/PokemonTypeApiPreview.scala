@@ -7,15 +7,15 @@ import com.netaporter.uri.dsl._
 import models.payload.PokemonTypePayload
 
 
-case class PokemonTypeApi(`type`: TypeApi, slot: Int) {
+case class PokemonTypeApiPreview(`type`: TypeApiPreview, slot: Int) {
   def toPayload = PokemonTypePayload(id = `type`.url.pathParts(3).part.toInt, name = `type`.name)
 }
 
-sealed case class TypeApi(url: String, name: String)
+sealed case class TypeApiPreview(url: String, name: String)
 
-object PokemonTypeApi {
-  implicit val typeApiFormat = Json.format[TypeApi]
-  implicit val pokemonTypeApiFormat = Json.format[PokemonTypeApi]
+object PokemonTypeApiPreview {
+  implicit val typeApiFormat = Json.format[TypeApiPreview]
+  implicit val pokemonTypeApiFormat = Json.format[PokemonTypeApiPreview]
 }
 
 
