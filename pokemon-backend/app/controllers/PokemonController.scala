@@ -13,7 +13,7 @@ import com.netaporter.uri.dsl._
 import scala.concurrent.{ExecutionContext, Future}
 import javax.inject._
 
-import models.pokemonApi.PokemonNameAndUrl
+import models.pokemonApi.{PokemonNameAndUrl, PokemonType}
 
 
 class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
@@ -26,7 +26,7 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
       ws.url(pokemonUrl ? ("limit" -> "1000"))
         .get
         .map { response =>
-          // todo check this response is valid to avoid losing hours of dumb debugging
+          // todo check this response is valid if you wanna avoid losing hours of dumb debugging
           Logger.info(s"Get pokemons list response $response")
           val results = (response.json \ "results").as[List[PokemonNameAndUrl]]
           val pokemons = results.map(result =>
@@ -53,7 +53,8 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
         val id = (responseJson \ "id").as[Int]
         val name = (responseJson \ "name").as[String]
         val imgurl = (responseJson \ "sprites" \ "front_default").as[String]
-        //val types = (responseJson \ "types").as[List[PokemonType]]
+        val types = (responseJson \ "types").as[List[PokemonType]]
+        Logger.info(s"Get pokemon types: $types")
         val pokemon = Pokemon(id, name, Some(imgurl))
 
         Ok(Json.toJson(pokemon))

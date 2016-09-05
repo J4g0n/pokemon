@@ -6,7 +6,5 @@ import play.api.libs.json._
 case class Pokemon(id: Long, name: String, imgurl: Option[String] = None)
 
 object Pokemon {
-
   implicit val pokemonFormat = Json.format[Pokemon]
-
 }
