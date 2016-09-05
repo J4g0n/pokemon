@@ -5,7 +5,7 @@ import play.api.mvc._
 import play.api.i18n._
 import play.api.libs.ws._
 import play.api.data.validation.Constraints._
-import play.api.libs.json.{Json, Reads}
+import play.api.libs.json.{JsValue, Json, Reads}
 import models._
 import dal._
 import com.netaporter.uri.dsl._
@@ -22,6 +22,7 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
                                  (implicit ec: ExecutionContext) extends Controller with I18nSupport{
   val baseUrl = "http://pokeapi.co" / "api" / "v2"
   val pokemonUrl = baseUrl / "pokemon"
+  val typeUrl = baseUrl / "type"
 
   def getPokemons = Action.async {
     implicit request => {
@@ -42,26 +43,35 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
   }
 
   def getPokemon(pokemonId: Int) = Action.async { implicit request =>
-    // todo check if pokemon is in db before fetching it again ans using ws as a fallback
-    ws.url(pokemonUrl / pokemonId.toString)
-      .get
-      .map { response =>
-        // todo add some processing here
-        // 1. write to db // optional atm
-        // 2. we could try also to retrieve and compute stats here
-        // 3. normalize payload to Pokemon case class
-        Logger.info(s"Get pokemon response: $response \nfor pokemon: $pokemonId")
-        val responseJson = response.json
-        val id = (responseJson \ "id").as[Int]
-        val name = (responseJson \ "name").as[String]
-        val imgurl = (responseJson \ "sprites" \ "front_default").as[String]
-        val pokemonTypes = (responseJson \ "types").as[List[PokemonTypeApi]]
-        Logger.info(s"Get pokemon types: $pokemonTypes")
-        val pokemonStats = (responseJson \ "stats").as[List[PokemonStatApi]]
-        Logger.info(s"Get pokemon types: $pokemonStats")
-        val pokemon = PokemonPayload(id, name, imgurl, pokemonStats.map(_.toPayload), pokemonTypes.map(_.toPayload))
-
-        Ok(Json.toJson(pokemon))
-      }
+    // todo check if pokemon is in db before fetching it again and use ws as a fallback
+    getPokemonPayload(pokemonId).map(payload => Ok(Json.toJson(payload)))
   }
+
+  private def getPayload[T](url: String)(f: JsValue => T) = {
+    ws.url(url)
+      .get
+      .map(response => {
+        Logger.info(s"Get response: $response")
+        val responseJson = response.json
+        f(responseJson)
+      })
+  }
+
+  private def getPokemonPayload(pokemonId: Int): Future[PokemonPayload] = {
+    getPayload[PokemonPayload](pokemonUrl / pokemonId.toString)(
+      jsValue => {
+        // todo maybe there is smarter way to do this with some implicit Reads
+        val id = (jsValue \ "id").as[Int]
+        val name = (jsValue \ "name").as[String]
+        val imgurl = (jsValue \ "sprites" \ "front_default").as[String]
+        val pokemonTypes = (jsValue \ "types").as[List[PokemonTypeApi]]
+        Logger.info(s"Get pokemon types: $pokemonTypes")
+        val pokemonStats = (jsValue \ "stats").as[List[PokemonStatApi]]
+        Logger.info(s"Get pokemon types: $pokemonStats")
+        PokemonPayload(id, name, imgurl, pokemonStats.map(_.toPayload), pokemonTypes.map(_.toPayload))
+      }
+    )
+  }
+
+  //private def getType(typeId: Int) =
 }
