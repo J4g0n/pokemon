@@ -2,10 +2,8 @@ package models
 
 import play.api.libs.json._
 
-/**
-  * Created by sandman on 9/4/16.
-  */
-case class Pokemon(id: Int, name: String)
+// todo this is bad to use imgurl without fetching it locally because we are polling pokeapi for no reason
+case class Pokemon(id: Long, name: String, imgurl: Option[String] = None)
 
 object Pokemon {
 

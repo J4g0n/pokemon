@@ -27,7 +27,7 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
         .get
         .map { response =>
           // todo check this response is valid to avoid losing hours of dumb debugging
-          Logger.info("Get pokemons list response! " + response)
+          Logger.info(s"Get pokemons list response $response")
           val results = (response.json \ "results").as[List[PokemonNameAndUrl]]
           val pokemons = results.map(result =>
             PokemonNameAndId(name = result.name, id = result.url.pathParts(3).part)
@@ -39,16 +39,24 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
     }
   }
 
-  def getPokemon(id: Int) = Action.async { implicit request =>
+  def getPokemon(pokemonId: Int) = Action.async { implicit request =>
     // todo check if pokemon is in db before fetching it again ans using ws as a fallback
-    ws.url(pokemonUrl / id.toString)
+    ws.url(pokemonUrl / pokemonId.toString)
       .get
-      .map(response =>
+      .map { response =>
         // todo add some processing here
-        // 1. write to db
+        // 1. write to db // optional atm
         // 2. we could try also to retrieve and compute stats here
         // 3. normalize payload to Pokemon case class
-        Ok(response.json)
-      )
+        Logger.info(s"Get pokemon response: $response \nfor pokemon: $pokemonId")
+        val responseJson = response.json
+        val id = (responseJson \ "id").as[Int]
+        val name = (responseJson \ "name").as[String]
+        val imgurl = (responseJson \ "sprites" \ "front_default").as[String]
+        //val types = (responseJson \ "types").as[List[PokemonType]]
+        val pokemon = Pokemon(id, name, Some(imgurl))
+
+        Ok(Json.toJson(pokemon))
+      }
   }
 }
