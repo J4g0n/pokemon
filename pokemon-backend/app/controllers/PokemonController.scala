@@ -14,7 +14,7 @@ import scala.concurrent.{ExecutionContext, Future}
 import javax.inject._
 
 import models.db.PokemonDB
-import models.payload.{PokemonPayload, PokemonPreviewPayload, TypePayload}
+import models.payload._
 import models.pokemonApi.{PokemonApiPreview, PokemonStatApiPreview, PokemonTypeApiPreview}
 
 
@@ -44,13 +44,20 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
 
   def getPokemon(pokemonId: Int) = Action.async { implicit request =>
     // todo check if pokemon is in db before fetching it again and use ws as a fallback
-    getPokemonPayload(pokemonId).map(payload => Ok(Json.toJson(payload)))
+    for {
+      pokemon <- getPokemonPayload(pokemonId)
+      typesStats <- getTypeWithStats(pokemon.types.head.id)
+    } yield {
+      Logger.info(s"\n\nType stats: $typesStats")
+      //val pokemonWithStats = pokemon.copy(types = typesWithStats)
+      Ok(Json.toJson(pokemon))
+    }
   }
 
   def getType(typeId: Int) = Action.async { implicit request =>
     // todo check if pokemon is in db before fetching it again and use ws as a fallback
     getTypePayload(typeId).map(payload => {
-      Logger.info(s"Get type payload: $payload")
+      Logger.info(s"\n\nGet type payload: $payload")
       Ok(Json.toJson(payload))
     })
   }
@@ -84,7 +91,7 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
     )
   }
 
-  private def getPokemonStats(pokemonId: Int) = {
+  private def getPokemonStats(pokemonId: Int): Future[List[PokemonStatApiPreview]] = {
     getPayload[List[PokemonStatApiPreview]](pokemonUrl / pokemonId.toString)(
       jsValue => (jsValue \ "stats").as[List[PokemonStatApiPreview]]
     )
@@ -92,12 +99,29 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
 
 
 
-  private def getTypeStats(typeId: Int) = {
+
+  private def getTypeWithStats(typeId: Int): Future[PokemonTypePayload] = {
     // todo check if pokemon is in db before fetching it again and use ws as a fallback
     for {
       typePayload <- getTypePayload(typeId)
-      pokemonsStats <- Future.sequence(typePayload.pokemons.map(pokemon => getPokemonStats(pokemon.id)))
-    } yield pokemonsStats.flatten
+      pokemonTypeStats <- Future.sequence(typePayload.pokemons.map(pokemon => getPokemonStats(pokemon.id)))
+    } yield {
+      val pokemonTypeStatsProcessed = processTypeStats(pokemonTypeStats.flatten.map(_.toPayload))
+      Logger.info(s"\n\nall stats $typeId:\n$pokemonTypeStats")
+      // these are the stats of all pokemons with specific typeId
+      // todo next step id grouping by stat specific type and compute average value using reduce
+      PokemonTypePayload(typePayload.id.toInt, typePayload.name, pokemonTypeStatsProcessed)
+    }
+  }
+
+  private def processTypeStats(typeStats: List[PokemonStatPayload]) = {
+    typeStats.groupBy(_.id).map(pokemonGroupedStats => {
+      val groupedStats = pokemonGroupedStats._2
+      val id = groupedStats.head.id
+      val name = groupedStats.head.name
+      val averageStat = groupedStats.foldRight(0)((stats, acc) => stats.value + acc) / groupedStats.length
+      PokemonStatPayload(id, name, averageStat)
+    }).toList
   }
 
   private def getTypePayload(typeId: Int): Future[TypePayload]= {
