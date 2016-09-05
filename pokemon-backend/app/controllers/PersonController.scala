@@ -20,7 +20,7 @@ class PersonController @Inject() (repo: PersonRepository, val messagesApi: Messa
   /**
    * The mapping for the person form.
    */
-  val personForm: Form[CreatePersonForm] = Form {
+  /*val personForm: Form[CreatePersonForm] = Form {
     mapping(
       "name" -> nonEmptyText,
       "age" -> number.verifying(min(0), max(140))
@@ -65,7 +65,7 @@ class PersonController @Inject() (repo: PersonRepository, val messagesApi: Messa
   	repo.list().map { people =>
       Ok(Json.toJson(people))
     }
-  }
+  }*/
 }
 
 /**

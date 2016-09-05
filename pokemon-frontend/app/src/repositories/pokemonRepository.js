@@ -3,9 +3,8 @@ import { baseUrl } from '../config';
 
 
 export const getPokemonList = () => {
-    // todo 1. externalise this to rest api
-    // todo 2. add pagination to it
-    const url = "http://pokeapi.co/api/v2/pokemon/?limit=1000";
+    // todo add pagination to it
+    const url = baseUrl + "pokemons";
     return fetch(url, {
         method: "GET",
         headers: {
@@ -22,10 +21,12 @@ export const getPokemonList = () => {
     );
 };
 
-export const getPokemon = (url) => {
-    // todo 1. externalise this to rest api
-    // todo 2. add pagination to it
-    return fetch(url, {
+export const searchPokemon = (pokemonName) => {
+    // todo add search as request to api
+};
+
+export const getPokemon = (id) => {
+    return fetch(baseUrl + "pokemon/" + id, {
         method: "GET",
         headers: {
             "Content-Type": "application/json"

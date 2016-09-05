@@ -10,20 +10,18 @@ require("../styles/content.less");
 
 class Content extends React.Component {
 	componentDidMount() {
-		console.log("Content props: ", this.props);
 		const { dispatch, actions, pokemons } = this.props;
-		// todo fetching init datas here is just bad
+		// todo fetching init datas here is just bad, trigger this in main function instead
 		if (_.isEmpty(pokemons)) {
 			getPokemonList().then(pokemons => {
-				dispatch(actions.getPokemonList(pokemons.results));
+				dispatch(actions.getPokemonList(pokemons));
 			});
 		}
 	}
 
 	onClickPokemon(pokemon) {
 		const { dispatch, actions } = this.props;
-		getPokemon(pokemon.url).then(foundPokemon => {
-			console.log("Pokemon fetched: ", foundPokemon);
+		getPokemon(pokemon.id).then(foundPokemon => {
 			dispatch(actions.selectPokemon(foundPokemon));
 		});
 	}

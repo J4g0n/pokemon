@@ -1,3 +1,9 @@
+/*resolvers ++= Seq(
+  //Resolver.bintrayIvyRepo("sargunster", "maven")
+  //Resolver.sonatypeRepo("releases")
+  //Resolver.url("sarge", url("http://dl.bintray.com/sargunster/maven/"))(Resolver.mavenStylePatterns)
+)*/
+
 // The Play plugin
 addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.5.6")
 
