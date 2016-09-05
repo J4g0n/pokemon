@@ -13,7 +13,9 @@ import com.netaporter.uri.dsl._
 import scala.concurrent.{ExecutionContext, Future}
 import javax.inject._
 
-import models.pokemonApi.{PokemonNameAndUrl, PokemonType}
+import models.db.PokemonDB
+import models.payload.{PokemonPayload, PokemonPreviewPayload}
+import models.pokemonApi.{PokemonApiPreview, PokemonStatApi, PokemonTypeApi}
 
 
 class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
@@ -28,9 +30,9 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
         .map { response =>
           // todo check this response is valid if you wanna avoid losing hours of dumb debugging
           Logger.info(s"Get pokemons list response $response")
-          val results = (response.json \ "results").as[List[PokemonNameAndUrl]]
+          val results = (response.json \ "results").as[List[PokemonApiPreview]]
           val pokemons = results.map(result =>
-            PokemonNameAndId(name = result.name, id = result.url.pathParts(3).part)
+            PokemonPreviewPayload(name = result.name, id = result.url.pathParts(3).part)
           )
           val pokemonsJson = Json.toJson(pokemons)
 
@@ -53,9 +55,11 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
         val id = (responseJson \ "id").as[Int]
         val name = (responseJson \ "name").as[String]
         val imgurl = (responseJson \ "sprites" \ "front_default").as[String]
-        val types = (responseJson \ "types").as[List[PokemonType]]
-        Logger.info(s"Get pokemon types: $types")
-        val pokemon = Pokemon(id, name, Some(imgurl))
+        val pokemonTypes = (responseJson \ "types").as[List[PokemonTypeApi]]
+        Logger.info(s"Get pokemon types: $pokemonTypes")
+        val pokemonStats = (responseJson \ "stats").as[List[PokemonStatApi]]
+        Logger.info(s"Get pokemon types: $pokemonStats")
+        val pokemon = PokemonPayload(id, name, imgurl, pokemonStats.map(_.toPayload), pokemonTypes.map(_.toPayload))
 
         Ok(Json.toJson(pokemon))
       }
