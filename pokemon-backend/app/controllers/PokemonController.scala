@@ -46,18 +46,30 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
     // todo check if pokemon is in db before fetching it again and use ws as a fallback
     for {
       pokemon <- getPokemonPayload(pokemonId)
-      typesStats <- getTypeWithStats(pokemon.types.head.id)
+    } yield {
+      Ok(Json.toJson(pokemon))
+    }
+  }
+
+  def getPokemonWithStats(pokemonId: Int) = Action.async { implicit request =>
+    // todo check if pokemon is in db before fetching it again and use ws as a fallback
+    for {
+      pokemon <- getPokemonPayload(pokemonId)
+      typesStats <- Future.sequence(pokemon.types.map(pokemonType => getTypeWithStats(pokemonType.id)))
     } yield {
       Logger.info(s"\n\nType stats: $typesStats")
-      //val pokemonWithStats = pokemon.copy(types = typesWithStats)
-      Ok(Json.toJson(pokemon))
+      val pokemonWithStats = pokemon.copy(types = typesStats)
+      Logger.info(s"\n\nType stats: $pokemonWithStats")
+      val jsonPokemon = Json.toJson(pokemonWithStats)
+      Logger.info(s"\n\nType stats: $jsonPokemon")
+      Ok(jsonPokemon)
     }
   }
 
   def getType(typeId: Int) = Action.async { implicit request =>
     // todo check if pokemon is in db before fetching it again and use ws as a fallback
     getTypePayload(typeId).map(payload => {
-      Logger.info(s"\n\nGet type payload: $payload")
+      //Logger.info(s"\n\nGet type payload: $payload")
       Ok(Json.toJson(payload))
     })
   }
@@ -107,7 +119,7 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
       pokemonTypeStats <- Future.sequence(typePayload.pokemons.map(pokemon => getPokemonStats(pokemon.id)))
     } yield {
       val pokemonTypeStatsProcessed = processTypeStats(pokemonTypeStats.flatten.map(_.toPayload))
-      Logger.info(s"\n\nall stats $typeId:\n$pokemonTypeStats")
+      //Logger.info(s"\n\nall stats $typeId:\n$pokemonTypeStats")
       // these are the stats of all pokemons with specific typeId
       // todo next step id grouping by stat specific type and compute average value using reduce
       PokemonTypePayload(typePayload.id.toInt, typePayload.name, pokemonTypeStatsProcessed)

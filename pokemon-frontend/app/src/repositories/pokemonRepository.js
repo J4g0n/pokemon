@@ -1,6 +1,8 @@
 import 'whatwg-fetch';
 import { baseUrl } from '../config';
 
+var pokemonFetched;
+var pokemonFetchedPromise;
 
 export const getPokemonList = () => {
     // todo add pagination to it
@@ -22,7 +24,7 @@ export const getPokemonList = () => {
 };
 
 export const searchPokemon = (pokemonName) => {
-    // todo add search as request to api
+    // todo implement search as request to api
 };
 
 export const getPokemon = (id) => {
@@ -34,7 +36,12 @@ export const getPokemon = (id) => {
         mode: "cors"
     }).then(
         response => {
-            return response.json();
+            let pokemonFetchedPromise = response.json().then(pokemonFound => {
+                pokemonFetched = pokemonFound;
+                console.log("Found pokemon inside repository: ", pokemonFound);
+                return pokemonFound;
+            });
+            return pokemonFetchedPromise;
         },
         error => {
             console.error(error);

@@ -22,6 +22,7 @@ class Content extends React.Component {
 	onClickPokemon(pokemon) {
 		const { dispatch, actions } = this.props;
 		getPokemon(pokemon.id).then(foundPokemon => {
+		    console.log("Found Pokemon inside content: ", foundPokemon);
 			dispatch(actions.selectPokemon(foundPokemon));
 		});
 	}

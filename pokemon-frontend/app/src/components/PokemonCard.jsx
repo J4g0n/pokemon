@@ -1,4 +1,6 @@
 import React from 'react';
+import PokemonTwitterTimeline from './PokemonTwitterTimeline.jsx';
+import PokemonStats from './PokemonStats.jsx';
 import _ from 'lodash';
 
 
@@ -7,12 +9,18 @@ require("../styles/pokemonCard.less");
 class PokemonCard extends React.Component {
 	render() {
 		const { pokemon } = this.props;
+		console.log("Pokemon: ", pokemon);
+		// todo img url reference the one on api side, improve later
 	 	return (
 	 		<div className="pokemon-card">
-				{pokemon.id}
-				{pokemon.name}
+				<div className="pokemon-picture">
+					<img src={pokemon.imgurl} alt="Pokemon picture"/>
+				</div>
+				<div className="pokemon-name">{pokemon.name}</div>
+				<PokemonStats pokemonName={pokemon.name} pokemonStats={pokemon.stats} pokemonTypes={pokemon.types}/>
 			</div>
 		);
+//		<PokemonTwitterTimeline pokemonName={pokemon.name}/>
 	}
 }
 

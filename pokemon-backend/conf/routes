@@ -4,7 +4,7 @@
 
 
 GET     /pokemons                   controllers.PokemonController.getPokemons()
-GET     /pokemon/:id                controllers.PokemonController.getPokemon(id: Int)
+GET     /pokemon/:id                controllers.PokemonController.getPokemonWithStats(id: Int)
 
 
 GET     /type/:id                controllers.PokemonController.getType(id: Int)
