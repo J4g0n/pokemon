@@ -1,8 +1,9 @@
-import 'whatwg-fetch';
+import 'isomorphic-fetch';
+import axios from 'axios';
+import _ from 'lodash';
+require('es6-promise').polyfill();
 import { baseUrl } from '../config';
 
-var pokemonFetched;
-var pokemonFetchedPromise;
 
 export const getPokemonList = () => {
     // todo add pagination to it
@@ -12,7 +13,8 @@ export const getPokemonList = () => {
         headers: {
             "Content-Type": "application/json"
         },
-        mode: "cors"
+        mode: "cors",
+        cache: "reload"
     }).then(
         response => {
             return response.json();
@@ -33,18 +35,47 @@ export const getPokemon = (id) => {
         headers: {
             "Content-Type": "application/json"
         },
-        mode: "cors"
+        mode: "cors",
+        cache: "reload"
     }).then(
         response => {
-            let pokemonFetchedPromise = response.json().then(pokemonFound => {
-                pokemonFetched = pokemonFound;
-                console.log("Found pokemon inside repository: ", pokemonFound);
-                return pokemonFound;
-            });
-            return pokemonFetchedPromise;
+            return response.json();
         },
         error => {
             console.error(error);
         }
     );
+};
+/*
+export const getTypeStats = (id) => {
+    return fetch(baseUrl + "typeStats/" + id, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        mode: "cors",
+        cache: "reload"
+    }).then(
+        response => {
+            console.log(response.status + ": " + response.statusText + "\n" + response);
+            return response.json().then(
+                json => {
+                    console.log("Type stats: ", json);
+                    return json;
+                }
+            );
+        },
+        error => {
+            console.error(error);
+        }
+    ).catch(error => {
+        console.log("ERROR: ", error);
+    });
+};
+*/
+export const getTypeStats = (id) => {
+    return axios.get(baseUrl + "typeStats/" + id).then(function (response) {
+        console.log("Type stats: ", response);
+        return response;
+    })
 };

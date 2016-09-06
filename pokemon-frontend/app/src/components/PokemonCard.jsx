@@ -8,8 +8,8 @@ require("../styles/pokemonCard.less");
 
 class PokemonCard extends React.Component {
 	render() {
-		const { pokemon } = this.props;
-		console.log("Pokemon: ", pokemon);
+		const { pokemon, typeStats } = this.props;
+		//console.log("Pokemon: ", pokemon);
 		// todo img url reference the one on api side, improve later
 	 	return (
 	 		<div className="pokemon-card">
@@ -17,7 +17,7 @@ class PokemonCard extends React.Component {
 					<img src={pokemon.imgurl} alt="Pokemon picture"/>
 				</div>
 				<div className="pokemon-name">{pokemon.name}</div>
-				<PokemonStats pokemonName={pokemon.name} pokemonStats={pokemon.stats} pokemonTypes={pokemon.types}/>
+				<PokemonStats pokemonName={pokemon.name} pokemonStats={pokemon.stats} pokemonTypes={typeStats}/>
 			</div>
 		);
 //		<PokemonTwitterTimeline pokemonName={pokemon.name}/>
@@ -25,7 +25,8 @@ class PokemonCard extends React.Component {
 }
 
 PokemonCard.propTypes = {
-	pokemon: React.PropTypes.object.isRequired
+	pokemon: React.PropTypes.object.isRequired,
+	typeStats: React.PropTypes.array
 };
 
 export default PokemonCard

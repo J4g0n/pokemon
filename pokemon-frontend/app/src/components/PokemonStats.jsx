@@ -30,7 +30,8 @@ class PokemonStats extends Component {
 
     render() {
         const { pokemonStats, pokemonTypes } = this.props;
-        const orderedStats = _.orderBy(pokemonStats, stat => stat.id)
+        console.log("Pokemon types: ", pokemonTypes);
+        const orderedStats = _.orderBy(pokemonStats, stat => stat.id);
         const orderedPokemonTypes = _.map(pokemonTypes, pokemonType => {
             return Object.assign(pokemonType, {
                 stats: _.orderBy(pokemonTypes.stats)
@@ -53,7 +54,7 @@ class PokemonStats extends Component {
 PokemonStats.propTypes = {
     pokemonName: PropTypes.string.isRequired,
     pokemonStats: PropTypes.array.isRequired,
-    pokemonTypes: PropTypes.array.isRequired
+    pokemonTypes: PropTypes.object
 };
 
 export default PokemonStats;

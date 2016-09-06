@@ -1,13 +1,13 @@
 import { applyMiddleware, compose, createStore, combineReducers } from 'redux'
 import search from './modules/searchReducer.js';
 import content from './modules/contentReducer.js';
-//import logger from 'redux-logger'
+import logger from 'redux-logger'
 
 // here is an example of middleware we can put to process state before reducers
 // let's cook some tweaks!!!
-/*let finalCreateStore = compose(
+let finalCreateStore = compose(
     applyMiddleware(logger())
-)(createStore);*/
+)(createStore);
 
 const combinedReducers = combineReducers({
     search,
@@ -26,5 +26,5 @@ const defaultInitialState = {
 
 
 export default function getStore() {
-    return createStore(combinedReducers, defaultInitialState);
+    return finalCreateStore(combinedReducers, defaultInitialState);
 }

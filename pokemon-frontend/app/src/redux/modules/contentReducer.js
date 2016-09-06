@@ -7,6 +7,10 @@ const contentReducer = function(state = { "pokemons": [] }, action) {
             return Object.assign({}, state, {
                 "selectedPokemon": action.selectedPokemon,
             });
+        case actions.GET_TYPE_STATS:
+            return Object.assign({}, state, {
+                "typeStats": action.typeStats,
+            });
         case actions.GET_POKEMON_LIST:
             return Object.assign({}, state, {
                 "pokemons": action.pokemons,

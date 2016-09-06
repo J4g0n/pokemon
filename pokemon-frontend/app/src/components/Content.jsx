@@ -3,7 +3,7 @@ import { connector } from '../redux/connector.jsx';
 import PokemonCard from './PokemonCard.jsx';
 import PokemonList from './PokemonList.jsx';
 
-import { getPokemonList, getPokemon } from "../repositories/pokemonRepository";
+import { getPokemonList, getPokemon, getTypeStats } from "../repositories/pokemonRepository";
 
 require("../styles/content.less");
 
@@ -22,8 +22,10 @@ class Content extends React.Component {
 	onClickPokemon(pokemon) {
 		const { dispatch, actions } = this.props;
 		getPokemon(pokemon.id).then(foundPokemon => {
-		    console.log("Found Pokemon inside content: ", foundPokemon);
 			dispatch(actions.selectPokemon(foundPokemon));
+        });
+		getTypeStats(pokemon.id).then(result => {
+			dispatch(actions.getTypeStats(result));
 		});
 	}
 
@@ -34,12 +36,12 @@ class Content extends React.Component {
 	}
 
 	render() {
-		const { selectedPokemon, pokemons } = this.props;
+		const { selectedPokemon, pokemons, typeStats } = this.props;
 	 	return (
 	 		<div className="content">
 				{
 					selectedPokemon ?
-						<PokemonCard pokemon={selectedPokemon}/> :
+						<PokemonCard pokemon={selectedPokemon} typeStats={typeStats}/> :
 						<PokemonList
 							onClickPokemon={this.onClickPokemon.bind(this)}
 							pokemons={this.filterPokemons()}
@@ -52,6 +54,7 @@ class Content extends React.Component {
 
 Content.propTypes = {
 	pokemons: React.PropTypes.array.isRequired,
+	typeStats: React.PropTypes.array,
 	selectedPokemon: React.PropTypes.object,
 	searchText: React.PropTypes.string
 };

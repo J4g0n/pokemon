@@ -51,18 +51,17 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
     }
   }
 
-  def getPokemonWithStats(pokemonId: Int) = Action.async { implicit request =>
+  def getPokemonTypes(pokemonId: Int) = Action.async { implicit request =>
     // todo check if pokemon is in db before fetching it again and use ws as a fallback
     for {
       pokemon <- getPokemonPayload(pokemonId)
       typesStats <- Future.sequence(pokemon.types.map(pokemonType => getTypeWithStats(pokemonType.id)))
     } yield {
+
       Logger.info(s"\n\nType stats: $typesStats")
-      val pokemonWithStats = pokemon.copy(types = typesStats)
-      Logger.info(s"\n\nType stats: $pokemonWithStats")
-      val jsonPokemon = Json.toJson(pokemonWithStats)
-      Logger.info(s"\n\nType stats: $jsonPokemon")
-      Ok(jsonPokemon)
+      val jsonTypesStats = Json.toJson(typesStats)
+      Logger.info(s"\n\nType stats: $jsonTypesStats")
+      Ok(jsonTypesStats)
     }
   }
 
