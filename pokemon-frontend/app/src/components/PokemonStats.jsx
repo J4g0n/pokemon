@@ -38,15 +38,17 @@ class PokemonStats extends Component {
             });
         });
         return (
-            <table className="pokemon-stats">
-                <thead>
-                    {this.renderHeader(orderedStats.map(orderedStat => orderedStat.name))}
-                </thead>
-                <tbody>
-                    {this.renderPokemonStats(pokemonStats)}
-                    {this.renderPokemonTypesStats(orderedPokemonTypes)}
-                </tbody>
-            </table>
+            <div>
+                <table className="pokemon-stats">
+                    <thead>
+                        {this.renderHeader(orderedStats.map(orderedStat => orderedStat.name))}
+                    </thead>
+                    <tbody>
+                        {this.renderPokemonStats(pokemonStats)}
+                        {this.renderPokemonTypesStats(orderedPokemonTypes)}
+                    </tbody>
+                </table>
+            </div>
         );
     }
 }
@@ -54,7 +56,7 @@ class PokemonStats extends Component {
 PokemonStats.propTypes = {
     pokemonName: PropTypes.string.isRequired,
     pokemonStats: PropTypes.array.isRequired,
-    pokemonTypes: PropTypes.object
+    pokemonTypes: PropTypes.array
 };
 
 export default PokemonStats;

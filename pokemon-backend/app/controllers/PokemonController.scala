@@ -1,5 +1,7 @@
 package controllers
 
+import java.util.concurrent.TimeUnit
+
 import play.api._
 import play.api.mvc._
 import play.api.i18n._
@@ -10,12 +12,14 @@ import models._
 import dal._
 import com.netaporter.uri.dsl._
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.{Await, ExecutionContext, Future, duration}
 import javax.inject._
 
 import models.db.PokemonDB
 import models.payload._
 import models.pokemonApi.{PokemonApiPreview, PokemonStatApiPreview, PokemonTypeApiPreview}
+
+import scala.concurrent.duration.Duration
 
 
 class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
@@ -51,18 +55,18 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
     }
   }
 
-  def getPokemonTypes(pokemonId: Int) = Action.async { implicit request =>
+  def getPokemonTypes(pokemonId: Int) = Action { implicit request =>
     // todo check if pokemon is in db before fetching it again and use ws as a fallback
-    for {
+    val value = for {
       pokemon <- getPokemonPayload(pokemonId)
       typesStats <- Future.sequence(pokemon.types.map(pokemonType => getTypeWithStats(pokemonType.id)))
     } yield {
-
       Logger.info(s"\n\nType stats: $typesStats")
-      val jsonTypesStats = Json.toJson(typesStats)
-      Logger.info(s"\n\nType stats: $jsonTypesStats")
-      Ok(jsonTypesStats)
+      Json.toJson(typesStats)
     }
+    val time = Duration(60, TimeUnit.SECONDS)
+    val returnValue = Await.result(value, time)
+    Ok(returnValue)
   }
 
   def getType(typeId: Int) = Action.async { implicit request =>

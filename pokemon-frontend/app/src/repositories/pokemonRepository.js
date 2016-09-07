@@ -5,16 +5,29 @@ require('es6-promise').polyfill();
 import { baseUrl } from '../config';
 
 
+function status(response) {
+    if (response.status >= 200 && response.status < 300) {
+        return Promise.resolve(response)
+    } else {
+        return Promise.reject(new Error(response.statusText))
+    }
+}
+
+function json(response) {
+    return response.json();
+}
+
+
 export const getPokemonList = () => {
     // todo add pagination to it
     const url = baseUrl + "pokemons";
     return fetch(url, {
         method: "GET",
         headers: {
+            "Accept": "application/json",
             "Content-Type": "application/json"
         },
-        mode: "cors",
-        cache: "reload"
+        mode: "cors"
     }).then(
         response => {
             return response.json();
@@ -35,8 +48,7 @@ export const getPokemon = (id) => {
         headers: {
             "Content-Type": "application/json"
         },
-        mode: "cors",
-        cache: "reload"
+        mode: "cors"
     }).then(
         response => {
             return response.json();
@@ -46,7 +58,7 @@ export const getPokemon = (id) => {
         }
     );
 };
-/*
+
 export const getTypeStats = (id) => {
     return fetch(baseUrl + "typeStats/" + id, {
         method: "GET",
@@ -55,27 +67,18 @@ export const getTypeStats = (id) => {
         },
         mode: "cors",
         cache: "reload"
-    }).then(
-        response => {
-            console.log(response.status + ": " + response.statusText + "\n" + response);
-            return response.json().then(
-                json => {
-                    console.log("Type stats: ", json);
-                    return json;
-                }
-            );
-        },
-        error => {
-            console.error(error);
-        }
-    ).catch(error => {
-        console.log("ERROR: ", error);
-    });
+    })
+        .then(status)
+        .then(json)
+        .catch(error => {
+            console.log("ERROR: ", error);
+        });
 };
-*/
+/*
 export const getTypeStats = (id) => {
     return axios.get(baseUrl + "typeStats/" + id).then(function (response) {
         console.log("Type stats: ", response);
-        return response;
+        return response.data;
     })
 };
+*/

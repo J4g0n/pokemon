@@ -25,6 +25,7 @@ class Content extends React.Component {
 			dispatch(actions.selectPokemon(foundPokemon));
         });
 		getTypeStats(pokemon.id).then(result => {
+			console.log("type stats: ", result);
 			dispatch(actions.getTypeStats(result));
 		});
 	}
