@@ -88,6 +88,7 @@ class PokemonController @Inject() (ws: WSClient, val messagesApi: MessagesApi)
     ws.url(url)
       .get
       .map(response => {
+        // todo throw some error or something to warn that something went wrong
         Logger.info(s"Get response: $response")
         val responseJson = response.json
         f(responseJson)

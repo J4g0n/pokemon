@@ -75,10 +75,20 @@ export const getPokemon = (id) => {
         });
 };*/
 
+
+// Add a response interceptor
+axios.interceptors.response.use(function (response) {
+    // Do something with response data
+    return response.data;
+}, function (error) {
+    // Do something with response error
+    return Promise.reject(error);
+});
+
 export const getTypeStats = (id) => {
-    return axios.get(baseUrl + "typeStats/" + id).then(function (response) {
+    return Promise.resolve(axios.get(baseUrl + "typeStats/" + id).then(function (response) {
         console.log("Type stats: ", response);
         return response;
-    })
+    }));
 };
 

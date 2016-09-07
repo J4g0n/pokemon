@@ -9,9 +9,6 @@ const contentReducer = function(state = { "pokemons": [] }, action) {
                 "selectedPokemon": action.selectedPokemon,
             });
         case actions.GET_TYPE_STATS:
-            console.log("Blocking...");
-            setTimeout(_.noop, 10000);
-            console.log("Unblocking...");
             return Object.assign({}, state, {
                 "typeStats": action.typeStats,
             });
