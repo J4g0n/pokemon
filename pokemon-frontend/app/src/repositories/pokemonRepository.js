@@ -59,7 +59,7 @@ export const getPokemon = (id) => {
     );
 };
 
-export const getTypeStats = (id) => {
+/*export const getTypeStats = (id) => {
     return fetch(baseUrl + "typeStats/" + id, {
         method: "GET",
         headers: {
@@ -73,12 +73,12 @@ export const getTypeStats = (id) => {
         .catch(error => {
             console.log("ERROR: ", error);
         });
-};
-/*
+};*/
+
 export const getTypeStats = (id) => {
     return axios.get(baseUrl + "typeStats/" + id).then(function (response) {
         console.log("Type stats: ", response);
-        return response.data;
+        return response;
     })
 };
-*/
+
